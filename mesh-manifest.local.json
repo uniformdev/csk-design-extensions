@@ -1,0 +1,59 @@
+{
+  "type": "design-extensions-local",
+  "displayName": "Design Extensions",
+  "logoIconUrl": "http://localhost:4030/logo.svg",
+  "badgeIconUrl": "http://localhost:4030/badge.svg",
+  "category": "starters",
+  "baseLocationUrl": "http://localhost:4030",
+  "locations": {
+    "install": {
+      "description": [
+        "This integration adds design extensions to Uniform visual editing capabilities, empowering web producers to do even more without developer intervention.",
+        "This integration allows you to control brand design settings in your project and adds new parameters to control design with a theme-scoped color picker, padding/margin control, etc.",
+        "This integration is necessary to run the latest Uniform Component Starter Kit."
+      ]
+    },
+    "settings": {
+      "url": "/settings"
+    },
+    "canvas": {
+      "parameterTypes": [
+        {
+          "type": "dex-color-palette-parameter",
+          "displayName": "Color Palette",
+          "configureUrl": "/config/color-palette",
+          "editorUrl": "/editor",
+          "renderableInPropertyPanel": true
+        },
+        {
+          "type": "dex-space-control-parameter",
+          "displayName": "Space Control",
+          "configureUrl": "/config/space-control?showViewPortToggle=true&showRequiredToggle=true",
+          "editorUrl": "/editor",
+          "renderableInPropertyPanel": true
+        },
+        {
+          "type": "dex-segmented-control-parameter",
+          "displayName": "Segmented Control",
+          "configureUrl": "/config/segmented-control?showViewPortToggle=true&showRequiredToggle=true",
+          "editorUrl": "/editor",
+          "renderableInPropertyPanel": true
+        },
+        {
+          "type": "dex-slider-control-parameter",
+          "displayName": "Slider Control",
+          "configureUrl": "/config/slider-param?showViewPortToggle=true&showRequiredToggle=true",
+          "editorUrl": "/editor",
+          "renderableInPropertyPanel": true
+        },
+        {
+          "type": "dex-token-selector-parameter",
+          "displayName": "Token Selector",
+          "configureUrl": "/config/token-selector?showViewPortToggle=true&showRequiredToggle=true",
+          "editorUrl": "/editor",
+          "renderableInPropertyPanel": true
+        }
+      ]
+    }
+  }
+}
