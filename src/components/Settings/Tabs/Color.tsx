@@ -160,13 +160,8 @@ const Color: FC<ColorProps> = ({ colors, allowGroups, withDarkMode, setColors, s
       <div className="flex flex-col gap-4">
         {(allowGroups || ALLOW_COLOR_GROUP)
           .filter(groupName => groupedColors[groupName]?.length)
-          .map((group, index, array) => (
-            <GroupItems
-              key={group}
-              withDarkMode={withDarkMode}
-              title={capitalizeFirstLetter(group)}
-              isOpenByDefault={array.length - 1 === index && !isOpenByDefault}
-            >
+          .map(group => (
+            <GroupItems key={group} withDarkMode={withDarkMode} title={capitalizeFirstLetter(group)}>
               <>
                 {renderColors(groupedColors[group], group)}
                 <Button

@@ -213,12 +213,8 @@ export const SizeDimension: FC<SizeDimensionProps> = ({ dimensions, allowGroups,
       <div className="flex flex-col gap-4">
         {(allowGroups || ALLOW_DIMENSION_GROUP)
           .filter(groupName => groupedDimensions[groupName]?.length)
-          .map((group, index, array) => (
-            <GroupItems
-              key={group}
-              title={capitalizeFirstLetter(group)}
-              isOpenByDefault={array.length - 1 === index && !isOpenByDefault}
-            >
+          .map(group => (
+            <GroupItems key={group} title={capitalizeFirstLetter(group)}>
               <>
                 {renderDimensions(groupedDimensions[group], group)}
                 <Button
