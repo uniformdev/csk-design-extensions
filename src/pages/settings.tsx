@@ -86,26 +86,23 @@ const SettingsPage: FC = () => {
 
       const defaultFont = getFontNameByIndex(newDefaultFontIndex, newFonts);
 
-      return fetch(
-        `/api/setThemeData?projectId=${projectId}${dashboardOrigin.includes('canary') ? '&env=canary' : ''}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'custom-origin': window.location.origin,
-          },
-          body: JSON.stringify({
-            withDarkMode,
-            colors: newColors,
-            dimensions: newDimensions,
-            fonts: newFonts,
-            defaultFont,
-            borders: newBorders,
-            allowedGroup: newAllowedGroup,
-          }),
-          redirect: 'follow',
-        }
-      ).then(response => {
+      return fetch(`/api/setThemeData?projectId=${projectId}&baseUrl=${dashboardOrigin}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'custom-origin': window.location.origin,
+        },
+        body: JSON.stringify({
+          withDarkMode,
+          colors: newColors,
+          dimensions: newDimensions,
+          fonts: newFonts,
+          defaultFont,
+          borders: newBorders,
+          allowedGroup: newAllowedGroup,
+        }),
+        redirect: 'follow',
+      }).then(response => {
         if (!response.ok) throw response.statusText;
       });
     },

@@ -189,18 +189,18 @@ export const getDataFromKVStorage = (projectId: string | string[]) =>
 export const setDataToKVStorage = (
   projectId: string | string[],
   data: Type.KVStorage & Type.KVMetaData,
-  env = 'production'
+  environmentUrl = 'https://uniform.app'
 ) =>
   kv.set(typeof projectId === 'string' ? projectId : projectId[0], {
     ...data,
     metaData: {
-      environment: env || data?.metaData?.environment,
+      environment: getEnvironmentFromUrl(environmentUrl) || data?.metaData?.environment,
       lastUpdated: new Date().toISOString(),
     },
   });
 
-export const checkRoles = (projectId: string | string[], xApiKey: string, environment?: string) =>
-  fetch(`https://${environment ? `${environment}.` : ''}uniform.app/api/v2/manifest?projectId=${projectId}`, {
+export const checkRoles = (projectId: string | string[], xApiKey: string, baseUrl?: string) =>
+  fetch(`${baseUrl}/api/v2/manifest?projectId=${projectId}`, {
     method: 'GET',
     headers: { 'x-api-key': xApiKey },
   });
@@ -311,3 +311,38 @@ export const formattedBorderTokens = (borders: Type.KVStorage['borders']) =>
     }),
     {}
   ) || {};
+
+export const getEnvironmentUrl = (baseUrl?: string, env?: string) => {
+  if (!baseUrl && !env) {
+    return 'https://uniform.app';
+  }
+  if (baseUrl) {
+    return baseUrl;
+  }
+  const environment = env === 'canary' ? 'canary' : undefined;
+
+  return `https://${environment ? `${environment}.` : ''}uniform.app`;
+};
+
+export const getEnvironmentFromUrl = (url: string): string => {
+  try {
+    const hostname = new URL(url).hostname;
+
+    if (hostname.startsWith('localhost')) {
+      return 'localhost';
+    }
+
+    const predefinedEnvironments: Record<string, string> = {
+      'uniform.app': 'production',
+      'canary.uniform.app': 'canary',
+    };
+
+    if (predefinedEnvironments[hostname]) {
+      return predefinedEnvironments[hostname];
+    }
+
+    return hostname?.replaceAll('.uniform.app', '');
+  } catch {
+    return '';
+  }
+};

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getDataFromKVStorage, setDataToKVStorage } from '@/utils';
+import { getDataFromKVStorage, getEnvironmentUrl, setDataToKVStorage } from '@/utils';
 
 // The value does not include the protocol scheme https://
 const allowedOrigins = [
@@ -20,11 +20,14 @@ const setThemeData = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(403).json({ message: 'Forbidden: Invalid host' });
     }
 
-    const { projectId, env } = req.query;
-    const environment = env === 'canary' ? 'canary' : undefined;
+    const { projectId, baseUrl, env } = req.query;
+
+    const environmentUrl = getEnvironmentUrl(baseUrl as string, env as string);
+
     if (!projectId) return res.status(401).json({ message: 'Project Id was not provided' });
+
     const { metaData } = (await getDataFromKVStorage(projectId)) || {};
-    await setDataToKVStorage(projectId, { ...req.body, metaData }, environment);
+    await setDataToKVStorage(projectId, { ...req.body, metaData }, environmentUrl);
     res.status(200).send('OK');
   } catch (error) {
     return res.status(500).json(error);

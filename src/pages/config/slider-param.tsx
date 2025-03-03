@@ -234,7 +234,6 @@ const DesignExtensionsParametersConfig: FC = () => {
       );
     } else {
       return (
-        // eslint-disable-next-line tailwindcss/no-custom-classname
         <div className="slider-configuration-steps-container">
           <Input
             name="minValue"
