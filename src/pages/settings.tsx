@@ -4,7 +4,7 @@ import { useMeshLocation } from '@uniformdev/mesh-sdk-react';
 import ErrorLoadingContainer from '@/components/ErrorLoadingContainer';
 import { Color, SizeDimension, Font, Border, Webhook } from '@/components/Settings/Tabs';
 import WithStylesVariables from '@/components/WithStylesVariables';
-import { ColorMode, TABS } from '@/constants';
+import { ColorMode, RESERVED_FONT_KEYS, TABS } from '@/constants';
 import { useLoadDataFromKVStore } from '@/hooks/useLoadDataFromKVStore';
 import { checkColorValueKeys, checkTokenKeys, getFontNameByIndex, isAliasValue, isValidUrl } from '@/utils';
 
@@ -74,9 +74,18 @@ const SettingsPage: FC = () => {
         throw new Error('Please make sure all dimension keys are unique and match the key format.');
       }
 
-      if (!checkTokenKeys(newFonts.map(({ fontKey }) => fontKey))) {
+      const fontKeys = newFonts.map(({ fontKey }) => fontKey);
+      if (!checkTokenKeys(fontKeys)) {
         setCurrentTabKey('font');
         throw new Error('Please make sure all font keys are unique and match the key format.');
+      }
+      if (fontKeys.some(fontKey => RESERVED_FONT_KEYS.includes(fontKey))) {
+        setCurrentTabKey('font');
+        throw new Error(
+          `Please do not use ${RESERVED_FONT_KEYS.join(', ')} as the fort key — ${
+            RESERVED_FONT_KEYS.length > 1 ? 'these are reserved names' : 'this is a reserved name'
+          }`
+        );
       }
 
       if (!checkTokenKeys(newBorders.map(({ borderKey }) => borderKey))) {
@@ -249,7 +258,7 @@ const SettingsPage: FC = () => {
     <ErrorLoadingContainer errorMessage={errorKVStoreLoadingMessage}>
       <WithStylesVariables colors={colors} dimensions={dimensions} />
       <LoadingOverlay isActive={isDataLoading} />
-      <div className="min-h-[500px] bg-white">
+      <div className="min-h-[700px] bg-white">
         {!isDataLoading && (
           <div className="mb-3">
             <Tabs selectedId={currentTabKey} onSelectedIdChange={tabKey => setCurrentTabKey(tabKey || 'color')}>

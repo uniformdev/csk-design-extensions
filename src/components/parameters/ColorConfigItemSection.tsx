@@ -13,7 +13,7 @@ const ColorItem: FC<ColorItemProps> = ({ className, colorKey, colorValues }) => 
   <div
     id={colorKey}
     title={colorValues}
-    className={classNames('size-6 rounded border border-gray-400 shrink-0 delay-500 bg-zero-pattern', className)}
+    className={classNames('size-8 rounded-sm border border-white bg-zero-pattern ', className)}
   >
     <div className="size-full rounded" style={{ backgroundColor: `var(--${colorKey})` }} />
   </div>

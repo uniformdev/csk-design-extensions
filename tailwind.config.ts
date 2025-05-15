@@ -15,6 +15,8 @@ export default {
         'custom-gray-light': '#f7f7f7',
         'custom-gray-border': '#d1d5db',
         'primary-action-default': 'var(--primary-action-default)',
+        'accent-dark': 'var(--accent-dark)',
+        'accent-dark-hover': 'var(--accent-dark-hover)',
       },
       spacing: {
         4.5: '18px',

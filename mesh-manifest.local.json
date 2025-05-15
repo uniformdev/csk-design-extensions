@@ -1,6 +1,6 @@
 {
   "type": "design-extensions-local",
-  "displayName": "Design Extensions",
+  "displayName": "Design Extensions Local",
   "logoIconUrl": "http://localhost:4030/logo.svg",
   "badgeIconUrl": "http://localhost:4030/badge.svg",
   "category": "starters",
@@ -54,6 +54,14 @@
           "renderableInPropertyPanel": true
         }
       ]
-    }
+    },
+    "tools": [
+      {
+        "id": "dex-settings-tool",
+        "name": "Design Extensions Local",
+        "url": "/settings",
+        "iconUrl": "http://localhost:4030/badge.svg"
+      }
+    ]
   }
 }

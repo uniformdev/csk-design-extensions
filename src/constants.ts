@@ -24,6 +24,8 @@ export const TABS: { label: string; key: Type.TabKey }[] = [
   { label: 'Webhooks', key: 'webhooks' },
 ];
 
+export const RESERVED_FONT_KEYS = ['default'];
+
 export const REGEX_KEY = /^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/;
 export const REGEX_GROUP_NAME = /^[a-z0-9_]+(\s?[a-z0-9_]+)*(\s?)?$/;
 export const REGEX_BRACKETS = /[{}]/g;

@@ -12,7 +12,7 @@ import classNames from 'classnames';
 import { ButtonWithMenu, Input, Link, MenuItem, Chip, ModalDialog, Heading, Label } from '@uniformdev/design-system';
 import { AddGoogleFontsModal } from '@/components/AddGoogleFontsModal';
 import { ArrowTopRightOnSquare, CheckCircle, Trash } from '@/components/icons';
-import { REGEX_KEY } from '@/constants';
+import { REGEX_KEY, RESERVED_FONT_KEYS } from '@/constants';
 import { getFontFamilyName, getFontURL } from '@/utils';
 
 type FontItemProps = {
@@ -48,7 +48,11 @@ const FontItem: FC<FontItemProps> = ({
           <Input
             showLabel={false}
             className={classNames('ml-5', {
-              '!text-red-500 !border-red-500': !isUniqueKey || !fontKey?.length || !new RegExp(REGEX_KEY).test(fontKey),
+              '!text-red-500 !border-red-500':
+                !isUniqueKey ||
+                !fontKey?.length ||
+                !new RegExp(REGEX_KEY).test(fontKey) ||
+                RESERVED_FONT_KEYS.includes(fontKey),
             })}
             value={fontKey}
             onChange={onChangeLabel}
