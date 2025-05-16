@@ -55,7 +55,7 @@
         }
       ]
     },
-    "tools": [
+    "projectTools": [
       {
         "id": "dex-settings-tool",
         "name": "Design Extensions Local",
