@@ -40,9 +40,9 @@ export const DEFAULT_GROUP_NAME = 'general';
 export const TRUE_VALIDATION_RESULT = Object.freeze({ isValid: true });
 
 export const VIEW_PORT_TABS: { tabName: string; tabKey: Type.ViewPortKeyType }[] = [
-  { tabName: 'Desktop', tabKey: 'desktop' },
-  { tabName: 'Tablet', tabKey: 'tablet' },
   { tabName: 'Mobile', tabKey: 'mobile' },
+  { tabName: 'Tablet', tabKey: 'tablet' },
+  { tabName: 'Desktop', tabKey: 'desktop' },
 ];
 
 export enum TokenType {
