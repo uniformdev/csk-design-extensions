@@ -234,6 +234,7 @@ const DesignExtensionsParametersConfig: FC = () => {
       );
     } else {
       return (
+        // eslint-disable-next-line tailwindcss/no-custom-classname
         <div className="slider-configuration-steps-container">
           <Input
             name="minValue"
@@ -330,6 +331,7 @@ const DesignExtensionsParametersConfig: FC = () => {
                   onResetAllValues={onResetAllValues}
                   onResetToDefault={onResetToDefault}
                   onUnsetValue={onUnsetValue}
+                  options={optionsToRender}
                   responsiveComponents={{
                     desktop: renderSliderControl('desktop'),
                     mobile: renderSliderControl('mobile'),
@@ -341,6 +343,7 @@ const DesignExtensionsParametersConfig: FC = () => {
                   {(typeof previewDefaultValue === 'string' || !previewDefaultValue) && (
                     <UpdateDefaultSingle
                       value={previewDefaultValue as string}
+                      options={optionsToRender}
                       onResetToDefault={() => onResetToDefault()}
                       onUnsetValue={() => onUnsetValue()}
                     />

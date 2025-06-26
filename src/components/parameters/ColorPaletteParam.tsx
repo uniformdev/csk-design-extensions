@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo, ChangeEvent } from 'react';
 import classNames from 'classnames';
-import { Button, Callout } from '@uniformdev/design-system';
+import { Callout } from '@uniformdev/design-system';
 import { SetLocationValueDispatch } from '@uniformdev/mesh-sdk-react';
 import WithStylesVariables from '@/components/WithStylesVariables';
 import { ALLOW_COLOR_GROUP } from '@/constants';
@@ -99,13 +99,15 @@ const ColorPaletteParam: FC<ColorPaletteParamProps> = ({
         })}
       </div>
       <div className="mt-2 flex items-center justify-between">
-        <div className="flex items-center text-sm">
-          <span className="mr-1 uppercase text-gray-400">Selected:</span>
-          <span className="truncate">{value || 'none'}</span>
-        </div>
-        <Button buttonType="ghostDestructive" onClick={handleClear} disabled={!value}>
-          Clear
-        </Button>
+        <span className="h-6 truncate">{value}</span>
+        <button
+          // eslint-disable-next-line tailwindcss/no-custom-classname
+          className="text-action-destructive-default disabled:text-gray-400"
+          onClick={handleClear}
+          disabled={!value}
+        >
+          clear
+        </button>
       </div>
     </div>
   );
