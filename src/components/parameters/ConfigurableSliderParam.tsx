@@ -194,6 +194,7 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
       onResetAllValues={onResetAllValues}
       onResetToDefault={onResetToDefault}
       onUnsetValue={onUnsetValue}
+      options={optionsToRender}
       responsiveComponents={{
         desktop: renderSliderControl('desktop'),
         tablet: renderSliderControl('tablet'),
@@ -204,6 +205,7 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
     <>
       <UpdateDefaultSingle
         value={value as string}
+        options={optionsToRender}
         onResetToDefault={() => onResetToDefault()}
         onUnsetValue={() => onUnsetValue()}
       />

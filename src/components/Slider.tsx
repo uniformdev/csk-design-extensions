@@ -74,17 +74,19 @@ const StepSlider: FC<SliderProps> = ({
         step={step}
         renderThumb={props => {
           if (errorText) return null;
+          const { key, ...restProps } = props;
           if (currentValue === undefined)
             return (
               <div
-                {...props}
+                key={key}
+                {...restProps}
                 className="absolute -top-2 flex size-6.5 items-center justify-center rounded-full border border-white bg-gray-500"
                 onClick={() => handleValueChange(minValue)}
               >
                 <div className="h-0.5 w-2 rounded-sm bg-white" />
               </div>
             );
-          return <div {...props} />;
+          return <div key={key} {...restProps} />;
         }}
         value={currentValue || 0}
       />
@@ -148,17 +150,19 @@ const CustomSlider: FC<Pick<SliderProps, 'options' | 'onChange' | 'value' | 'hid
         min={0}
         renderThumb={props => {
           if (errorText) return null;
+          const { key, ...restProps } = props;
           if (currentValue === undefined)
             return (
               <div
-                {...props}
+                key={key}
+                {...restProps}
                 className="absolute -top-2 flex size-6.5 items-center justify-center rounded-full border border-white bg-gray-500"
                 onClick={() => handleValueChange(0)}
               >
                 <div className="h-0.5 w-2 rounded-sm bg-white" />
               </div>
             );
-          return <div {...props} />;
+          return <div key={key} {...restProps} />;
         }}
         max={options?.length ? options?.length - 1 : 0}
         onChange={handleValueChange}
