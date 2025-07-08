@@ -191,6 +191,7 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
     <ResponsiveTabs
       value={value as Type.ViewPort<string>}
       setSelectedTab={setSelectedTab}
+      selectedTab={selectedTab}
       onResetAllValues={onResetAllValues}
       onResetToDefault={onResetToDefault}
       onUnsetValue={onUnsetValue}
