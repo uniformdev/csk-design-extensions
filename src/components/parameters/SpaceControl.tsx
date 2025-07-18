@@ -295,6 +295,7 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
     <ResponsiveTabs
       value={value as Type.ViewPort<string>}
       setSelectedTab={setSelectedTab}
+      selectedTab={selectedTab}
       onResetAllValues={onResetAllValues}
       onResetToDefault={onResetToDefault}
       hideValue

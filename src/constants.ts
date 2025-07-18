@@ -39,6 +39,9 @@ export const DEFAULT_GROUP_NAME = 'general';
 
 export const TRUE_VALIDATION_RESULT = Object.freeze({ isValid: true });
 
+export const VIEWPORT_CHANNEL_NAME = 'viewport-selected';
+export const VIEWPORT_SELECTED_MESSAGE_TYPE = 'TAB_SELECTED';
+
 export const VIEW_PORT_TABS: { tabName: string; tabKey: Type.ViewPortKeyType }[] = [
   { tabName: 'Mobile', tabKey: 'mobile' },
   { tabName: 'Tablet', tabKey: 'tablet' },
