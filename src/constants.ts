@@ -16,13 +16,14 @@ export enum ColorMode {
   Dark = 'dark',
 }
 
-export const TABS: { label: string; key: Type.TabKey }[] = [
+export const DESIGN_EXTENSIONS_TABS: { label: string; key: Type.TabKey }[] = [
   { label: 'Color', key: 'color' },
   { label: 'Size/Dimension', key: 'size-dimension' },
   { label: 'Font', key: 'font' },
   { label: 'Border', key: 'border' },
-  { label: 'Webhooks', key: 'webhooks' },
 ];
+
+export const UNIFORM_SETTINGS_TABS: { label: string; key: Type.TabKey }[] = [{ label: 'Webhooks', key: 'webhooks' }];
 
 export const RESERVED_FONT_KEYS = ['default'];
 

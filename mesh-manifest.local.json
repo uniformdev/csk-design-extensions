@@ -59,7 +59,7 @@
       {
         "id": "dex-settings-tool",
         "name": "Design Extensions Local",
-        "url": "/settings",
+        "url": "/projectTool",
         "iconUrl": "http://localhost:4030/badge.svg"
       }
     ]

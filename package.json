@@ -1,6 +1,6 @@
 {
   "name": "@uniformdev/design-extensions",
-  "version": "20.5.1",
+  "version": "20.25.1",
   "private": true,
   "engines": {
     "yarn": "please-use-npm",
@@ -17,8 +17,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@uniformdev/design-system": "^20.5.0",
-    "@uniformdev/mesh-sdk-react": "^20.5.0",
+    "@uniformdev/design-system": "^20.25.0",
+    "@uniformdev/mesh-sdk-react": "^20.25.0",
     "@vercel/kv": "^2.0.0",
     "classnames": "^2.5.1",
     "color": "^4.2.3",
