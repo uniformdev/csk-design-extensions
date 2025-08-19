@@ -6,11 +6,12 @@ import { TokenType } from '@/constants';
 import { transformDesignTokens } from '@/utils';
 
 type LoadingFromUrlProps = {
-  mode: TokenType;
+  initialMode: TokenType;
+  setMode: Dispatch<SetStateAction<TokenType>>;
   setTokens: Dispatch<SetStateAction<Type.DesignToken[]>>;
 };
 
-export const LoadingFromUrl: FC<LoadingFromUrlProps> = ({ mode, setTokens }) => {
+export const LoadingFromUrl: FC<LoadingFromUrlProps> = ({ initialMode, setMode, setTokens }) => {
   const [fileUrl, setFileUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -22,18 +23,40 @@ export const LoadingFromUrl: FC<LoadingFromUrlProps> = ({ mode, setTokens }) => 
 
   const handleLoadTokens = useCallback(async () => {
     setLoading(true);
+    setMode(initialMode);
+    setErrorMessage('');
     try {
       const designTokens = await fetch(fileUrl).then(r => r.json());
-      const tokens = transformDesignTokens(designTokens, mode);
-      if (!tokens.length) setErrorMessage(`Cannot find ${mode} tokens`);
+      const tokens = transformDesignTokens(designTokens, initialMode);
+      if (!tokens.length) setErrorMessage(`Cannot find ${initialMode} tokens`);
       setTokens(tokens);
     } catch {
       setTokens([]);
-      setErrorMessage(`Failed to get ${mode} tokens`);
+      setErrorMessage(`Failed to get ${initialMode} tokens`);
     } finally {
       setLoading(false);
     }
-  }, [fileUrl, mode, setTokens]);
+  }, [fileUrl, initialMode, setMode, setTokens]);
+
+  const handleLoadAllTokens = useCallback(async () => {
+    setLoading(true);
+    setMode(TokenType.All);
+    setErrorMessage('');
+    try {
+      const designTokens = await fetch(fileUrl).then(r => r.json());
+      const colorTokens = transformDesignTokens(designTokens, TokenType.Color);
+      const dimensionTokens = transformDesignTokens(designTokens, TokenType.Dimension);
+      const borderTokens = transformDesignTokens(designTokens, TokenType.Border);
+      const tokens = [...colorTokens, ...dimensionTokens, ...borderTokens];
+      if (!tokens.length) setErrorMessage(`Cannot find any tokens`);
+      setTokens(tokens);
+    } catch {
+      setTokens([]);
+      setErrorMessage(`Failed to get any tokens`);
+    } finally {
+      setLoading(false);
+    }
+  }, [fileUrl, setMode, setTokens]);
 
   return (
     <div className="py-5">
@@ -60,7 +83,10 @@ export const LoadingFromUrl: FC<LoadingFromUrlProps> = ({ mode, setTokens }) => 
       />
       <div className="my-2 flex items-center gap-2">
         <Button type="button" buttonType="secondary" onClick={handleLoadTokens} disabled={!fileUrl.length}>
-          Load {mode}
+          Load {initialMode} tokens
+        </Button>
+        <Button type="button" buttonType="secondaryInvert" onClick={handleLoadAllTokens} disabled={!fileUrl.length}>
+          Load all tokens
         </Button>
         {!!errorMessage && (
           <div className="flex items-center gap-1 text-brand-secondary-5">

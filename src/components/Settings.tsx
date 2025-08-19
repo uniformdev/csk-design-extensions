@@ -206,6 +206,8 @@ const Settings: FC<SettingsProps> = ({ location }) => {
               setColors={handleUpdateData(setColors)}
               setWithDarkMode={handleUpdateData(setWithDarkMode)}
               setAllowGroups={handleUpdateData(setAllowedGroup)}
+              setDimensions={handleUpdateData(setDimensions)}
+              setBorders={handleUpdateData(setBorders)}
             />
           );
         case 'size-dimension':
@@ -215,6 +217,8 @@ const Settings: FC<SettingsProps> = ({ location }) => {
               dimensions={dimensions}
               setDimensions={handleUpdateData(setDimensions)}
               setAllowGroups={handleUpdateData(setAllowedGroup)}
+              setColors={handleUpdateData(setColors)}
+              setBorders={handleUpdateData(setBorders)}
             />
           );
         case 'font':
@@ -234,6 +238,8 @@ const Settings: FC<SettingsProps> = ({ location }) => {
               setBorders={handleUpdateData(setBorders)}
               colors={colors}
               dimensions={dimensions}
+              setColors={handleUpdateData(setColors)}
+              setDimensions={handleUpdateData(setDimensions)}
             />
           );
         case 'webhooks':

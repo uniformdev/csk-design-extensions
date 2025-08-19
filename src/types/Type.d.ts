@@ -17,7 +17,7 @@ declare namespace Type {
 
   type KVMetaData = { metaData?: { environment: string; lastUpdated: string } };
 
-  type DesignToken = { key: string; value: string | object };
+  type DesignToken = { key: string; value: string | object; type: TokenType };
 
   type Callout = {
     type: 'caution' | 'danger' | 'info' | 'note' | 'success' | 'tip' | 'error';

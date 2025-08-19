@@ -49,21 +49,22 @@ export const getIndexByFontName = (fontName: string | undefined, fonts: NonNulla
 export const getFontNameByIndex = (index: number, fonts: NonNullable<Type.KVStorage['fonts']>) =>
   index === -1 || !fonts[index] ? undefined : fonts[index].fontKey;
 
-const toKebabCase = (str: string) =>
-  str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/[\s_]/g, '-')
-    .toLowerCase();
+const normalizeKey = (str: string) => str.replace(/[\s_]/g, '-');
 
-const getTokenValue = (value: string | Record<string, string>, type: TokenType) => {
+type JSONValue = string | number | boolean | null | { [key: string]: JSONValue } | JSONValue[];
+
+const isSimpleValue = (value: JSONValue) =>
+  typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+
+const getTokenValue = (value: JSONValue, type: TokenType) => {
   switch (type) {
     // Simple Tokens https://second-editors-draft.tr.designtokens.org/format/#types
     case TokenType.Color:
     case TokenType.Dimension:
-      return typeof value === 'string' ? value : '';
+      return isSimpleValue(value) ? value.toString() : '';
     // Composite Tokens https://second-editors-draft.tr.designtokens.org/format/#composite-types
     case TokenType.Border:
-      return typeof value === 'object' ? value : {};
+      return typeof value === 'object' && value !== null && !Array.isArray(value) ? value : {};
     default:
       return '';
   }
@@ -80,11 +81,12 @@ export const transformDesignTokens = (designTokens: object, type: TokenType) => 
       if (value && typeof value === 'object') {
         if (currentType && (value.$value || value.value)) {
           tokens.push({
-            key: `${prefix}${toKebabCase(key)}`,
+            key: `${prefix}${normalizeKey(key)}`,
             value: getTokenValue(value.$value || value.value, type),
+            type,
           });
         } else {
-          processTokenGroup(value, currentType, `${prefix}${toKebabCase(key)}-`);
+          processTokenGroup(value, currentType, `${prefix}${normalizeKey(key)}-`);
         }
       }
     });
@@ -199,11 +201,19 @@ export const setDataToKVStorage = (
     },
   });
 
-export const checkRoles = (projectId: string | string[], xApiKey: string, baseUrl?: string) =>
-  fetch(`${baseUrl}/api/v2/manifest?projectId=${projectId}`, {
+export const checkRoles = (projectId: string | string[], xApiKey: string, baseUrl: string) => {
+  if (!new URL(baseUrl).hostname?.endsWith('uniform.app')) {
+    return {
+      ok: false,
+      status: 403,
+      message: 'Forbidden domain',
+    };
+  }
+  return fetch(`${baseUrl}/api/v2/manifest?projectId=${projectId}`, {
     method: 'GET',
     headers: { 'x-api-key': xApiKey },
-  });
+  }).then(({ ok, status }) => ({ ok, status, message: ok ? 'API key is valid' : 'API key is not valid' }));
+};
 
 export const getColorTokensCSSVars = (tokens: NonNullable<Type.KVStorage['colors']>): string => {
   const simpleColors =

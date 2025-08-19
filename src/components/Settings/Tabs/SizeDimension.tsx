@@ -92,9 +92,18 @@ type SizeDimensionProps = {
   allowGroups?: string[];
   setDimensions: Dispatch<SetStateAction<NonNullable<Type.KVStorage['dimensions']>>>;
   setAllowGroups: Dispatch<SetStateAction<Type.KVStorage['allowedGroup']>>;
+  setColors: Dispatch<SetStateAction<NonNullable<Type.KVStorage['colors']>>>;
+  setBorders: Dispatch<SetStateAction<NonNullable<Type.KVStorage['borders']>>>;
 };
 
-export const SizeDimension: FC<SizeDimensionProps> = ({ dimensions, allowGroups, setDimensions, setAllowGroups }) => {
+export const SizeDimension: FC<SizeDimensionProps> = ({
+  dimensions,
+  allowGroups,
+  setDimensions,
+  setColors,
+  setBorders,
+  setAllowGroups,
+}) => {
   const [isShowAddDesignTokensModal, setIsShowAddDesignTokensModal] = useState(false);
   const [isShowGroupManagementModal, setIsShowGroupManagementModal] = useState(false);
 
@@ -122,10 +131,26 @@ export const SizeDimension: FC<SizeDimensionProps> = ({ dimensions, allowGroups,
 
   const handleLoadNewDimensions = useCallback(
     (props: SetStateAction<NonNullable<Type.KVStorage['dimensions']>>) => {
-      setIsShowAddDesignTokensModal(false);
       setDimensions(props);
+      setIsShowAddDesignTokensModal(false);
     },
     [setDimensions]
+  );
+
+  const handleLoadNewColors = useCallback(
+    (props: SetStateAction<NonNullable<Type.KVStorage['colors']>>) => {
+      setColors(props);
+      setIsShowAddDesignTokensModal(false);
+    },
+    [setColors]
+  );
+
+  const handleLoadNewBorders = useCallback(
+    (props: SetStateAction<NonNullable<Type.KVStorage['borders']>>) => {
+      setBorders(props);
+      setIsShowAddDesignTokensModal(false);
+    },
+    [setBorders]
   );
 
   const groupedDimensions = useMemo(
@@ -256,7 +281,12 @@ export const SizeDimension: FC<SizeDimensionProps> = ({ dimensions, allowGroups,
           title="Upload design tokens"
           className="custom-modal-wrapper"
         >
-          <AddDesignTokensModal mode={TokenType.Dimension} setDimensions={handleLoadNewDimensions} />
+          <AddDesignTokensModal
+            mode={TokenType.Dimension}
+            setDimensions={handleLoadNewDimensions}
+            setColors={handleLoadNewColors}
+            setBorders={handleLoadNewBorders}
+          />
         </ModalDialog>
       )}
       {isShowGroupManagementModal && (

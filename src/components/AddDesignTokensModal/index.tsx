@@ -14,12 +14,13 @@ type AddDesignTokensModalProps = {
 };
 
 export const AddDesignTokensModal: FC<AddDesignTokensModalProps> = ({
-  mode,
+  mode: initialMode,
   setColors,
   setDimensions,
   setBorders,
   isDarkEnable = false,
 }) => {
+  const [mode, setMode] = useState<TokenType>(initialMode);
   const [tokens, setTokens] = useState<NonNullable<Type.DesignToken[]>>([]);
   const [extend, setExtend] = useState(false);
 
@@ -27,11 +28,13 @@ export const AddDesignTokensModal: FC<AddDesignTokensModalProps> = ({
     (isDark = false) => {
       setColors?.(prevState => [
         ...(extend ? prevState : []),
-        ...tokens.map(({ key: colorKey, value }) => ({
-          colorKey,
-          ...prevState.find(({ colorKey: storedColorKey }) => storedColorKey == colorKey),
-          [isDark ? 'dark' : 'light']: transformToEntityValue(value, TokenType.Color),
-        })),
+        ...tokens
+          .filter(({ type }) => type === TokenType.Color)
+          .map(({ key: colorKey, value }) => ({
+            colorKey,
+            ...prevState.find(({ colorKey: storedColorKey }) => storedColorKey == colorKey),
+            [isDark ? 'dark' : 'light']: transformToEntityValue(value, TokenType.Color),
+          })),
       ]);
     },
     [extend, setColors, tokens]
@@ -40,25 +43,29 @@ export const AddDesignTokensModal: FC<AddDesignTokensModalProps> = ({
   const handleAddDimensions = useCallback(async () => {
     setDimensions?.(prevState => [
       ...(extend ? prevState : []),
-      ...tokens.map(({ key: dimensionKey, value }) => ({
-        dimensionKey,
-        value: transformToEntityValue(value, TokenType.Dimension) as string,
-      })),
+      ...tokens
+        .filter(({ type }) => type === TokenType.Dimension)
+        .map(({ key: dimensionKey, value }) => ({
+          dimensionKey,
+          value: transformToEntityValue(value, TokenType.Dimension) as string,
+        })),
     ]);
   }, [extend, setDimensions, tokens]);
 
   const handleAddBorders = useCallback(async () => {
     setBorders?.(prevState => [
       ...(extend ? prevState : []),
-      ...tokens.map(({ key: borderKey, value }) => ({
-        borderKey,
-        value: transformToEntityValue(value, TokenType.Border) as {
-          color: string;
-          width: string;
-          radius: string;
-          style: string;
-        },
-      })),
+      ...tokens
+        .filter(({ type }) => type === TokenType.Border)
+        .map(({ key: borderKey, value }) => ({
+          borderKey,
+          value: transformToEntityValue(value, TokenType.Border) as {
+            color: string;
+            width: string;
+            radius: string;
+            style: string;
+          },
+        })),
     ]);
   }, [extend, setBorders, tokens]);
 
@@ -89,6 +96,20 @@ export const AddDesignTokensModal: FC<AddDesignTokensModalProps> = ({
             Add Borders
           </Button>
         );
+      case TokenType.All:
+        return (
+          <Button
+            type="button"
+            buttonType="primaryInvert"
+            onClick={() => {
+              handleAddColors(false);
+              handleAddDimensions();
+              handleAddBorders();
+            }}
+          >
+            Add all tokens
+          </Button>
+        );
       default:
         return null;
     }
@@ -102,15 +123,15 @@ export const AddDesignTokensModal: FC<AddDesignTokensModalProps> = ({
           <TabButton id="file">From file</TabButton>
         </TabButtonGroup>
         <TabContent id="url">
-          <LoadingFromUrl mode={mode} setTokens={setTokens} />
+          <LoadingFromUrl initialMode={initialMode} setMode={setMode} setTokens={setTokens} />
         </TabContent>
         <TabContent id="file">
-          <LoadingFromFile mode={mode} setTokens={setTokens} />
+          <LoadingFromFile initialMode={initialMode} setMode={setMode} setTokens={setTokens} />
         </TabContent>
       </Tabs>
       {!!tokens.length && (
         <div className="flex flex-col gap-2">
-          <p>The following {mode} will be applied to your configuration:</p>
+          <p>The following {mode === TokenType.All ? 'tokens' : mode} will be applied to your configuration:</p>
           <div className="flex w-full flex-wrap gap-1 overflow-x-auto">
             {tokens.map(({ key }) => {
               return (
@@ -123,7 +144,7 @@ export const AddDesignTokensModal: FC<AddDesignTokensModalProps> = ({
           {renderSaveActions}
           <CheckboxWithInfo
             name="name"
-            label={`Extend the current configuration with new ${mode}`}
+            label={`Extend the current configuration with new ${mode === TokenType.All ? 'tokens' : mode}`}
             onChange={() => setExtend(prev => !prev)}
             checked={extend}
           />
