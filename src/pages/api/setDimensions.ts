@@ -12,7 +12,7 @@ const setDimensions = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!environmentUrl) return res.status(401).json({ message: 'We are not able to recognize the environment' });
 
     const response = await checkRoles(projectId, xApiKey, environmentUrl);
-    if (!response.ok) return res.status(response.status).json({ message: 'API key was not valid' });
+    if (!response.ok) return res.status(response.status).json({ message: response.message });
 
     const projectKey = typeof projectId === 'string' ? projectId : projectId[0];
     const data = req.body as Record<string, string>;

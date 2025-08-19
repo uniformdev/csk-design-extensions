@@ -54,6 +54,7 @@ export enum TokenType {
   Dimension = 'dimension',
   Font = 'font',
   Border = 'border',
+  All = 'all',
 }
 
 export enum CONTROL_VARIANT {

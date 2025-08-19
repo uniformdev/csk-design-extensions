@@ -188,9 +188,19 @@ type BorderProps = {
   setBorders: Dispatch<SetStateAction<NonNullable<Type.KVStorage['borders']>>>;
   colors: NonNullable<Type.KVStorage['colors']>;
   dimensions: NonNullable<Type.KVStorage['dimensions']>;
+  setColors: Dispatch<SetStateAction<NonNullable<Type.KVStorage['colors']>>>;
+  setDimensions: Dispatch<SetStateAction<NonNullable<Type.KVStorage['dimensions']>>>;
 };
 
-const Border: FC<BorderProps> = ({ withDarkMode, borders, setBorders, colors, dimensions }) => {
+const Border: FC<BorderProps> = ({
+  withDarkMode,
+  borders,
+  setBorders,
+  setColors,
+  setDimensions,
+  colors,
+  dimensions,
+}) => {
   const [isShowModal, setIsShowModal] = useState(false);
 
   const handleAddBorderClick = useCallback(
@@ -216,10 +226,26 @@ const Border: FC<BorderProps> = ({ withDarkMode, borders, setBorders, colors, di
 
   const handleLoadNewBorders = useCallback(
     (props: SetStateAction<NonNullable<Type.KVStorage['borders']>>) => {
-      setIsShowModal(false);
       setBorders(props);
+      setIsShowModal(false);
     },
     [setBorders]
+  );
+
+  const handleLoadNewColors = useCallback(
+    (props: SetStateAction<NonNullable<Type.KVStorage['colors']>>) => {
+      setColors(props);
+      setIsShowModal(false);
+    },
+    [setColors]
+  );
+
+  const handleLoadNewDimensions = useCallback(
+    (props: SetStateAction<NonNullable<Type.KVStorage['dimensions']>>) => {
+      setDimensions(props);
+      setIsShowModal(false);
+    },
+    [setDimensions]
   );
 
   const renderBorders = useCallback(
@@ -267,7 +293,12 @@ const Border: FC<BorderProps> = ({ withDarkMode, borders, setBorders, colors, di
       </div>
       {isShowModal && (
         <ModalDialog onRequestClose={() => setIsShowModal(false)} className="custom-modal-wrapper">
-          <AddDesignTokensModal mode={TokenType.Border} setBorders={handleLoadNewBorders} />
+          <AddDesignTokensModal
+            mode={TokenType.Border}
+            setBorders={handleLoadNewBorders}
+            setColors={handleLoadNewColors}
+            setDimensions={handleLoadNewDimensions}
+          />
         </ModalDialog>
       )}
     </div>

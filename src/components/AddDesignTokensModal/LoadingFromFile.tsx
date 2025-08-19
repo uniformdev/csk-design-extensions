@@ -7,11 +7,12 @@ import { TokenType } from '@/constants';
 import { transformDesignTokens } from '@/utils';
 
 type LoadingFromFileProps = {
-  mode: TokenType;
+  initialMode: TokenType;
+  setMode: Dispatch<SetStateAction<TokenType>>;
   setTokens: Dispatch<SetStateAction<Type.DesignToken[]>>;
 };
 
-export const LoadingFromFile: FC<LoadingFromFileProps> = ({ mode, setTokens }) => {
+export const LoadingFromFile: FC<LoadingFromFileProps> = ({ initialMode, setMode, setTokens }) => {
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -37,6 +38,7 @@ export const LoadingFromFile: FC<LoadingFromFileProps> = ({ mode, setTokens }) =
 
   const handleLoadTokens = useCallback(async () => {
     setLoading(true);
+    setMode(initialMode);
     setErrorMessage('');
     try {
       const reader = new FileReader();
@@ -47,16 +49,43 @@ export const LoadingFromFile: FC<LoadingFromFileProps> = ({ mode, setTokens }) =
         };
       });
       const designTokens = JSON.parse(result as string);
-      const tokens = transformDesignTokens(designTokens, mode);
-      if (!tokens.length) setErrorMessage(`Cannot find ${mode} tokens`);
+      const tokens = transformDesignTokens(designTokens, initialMode);
+      if (!tokens.length) setErrorMessage(`Cannot find ${initialMode} tokens`);
       setTokens(tokens);
     } catch {
       setTokens([]);
-      setErrorMessage(`Failed to get ${mode} tokens`);
+      setErrorMessage(`Failed to get ${initialMode} tokens`);
     } finally {
       setLoading(false);
     }
-  }, [acceptedFiles, mode, setTokens]);
+  }, [acceptedFiles, initialMode, setMode, setTokens]);
+
+  const handleLoadAllTokens = useCallback(async () => {
+    setLoading(true);
+    setMode(TokenType.All);
+    setErrorMessage('');
+    try {
+      const reader = new FileReader();
+      reader.readAsText(acceptedFiles[0]);
+      const result = await new Promise(resolve => {
+        reader.onload = function () {
+          resolve(reader.result);
+        };
+      });
+      const designTokens = JSON.parse(result as string);
+      const colorTokens = transformDesignTokens(designTokens, TokenType.Color);
+      const dimensionTokens = transformDesignTokens(designTokens, TokenType.Dimension);
+      const borderTokens = transformDesignTokens(designTokens, TokenType.Border);
+      const tokens = [...colorTokens, ...dimensionTokens, ...borderTokens];
+      if (!tokens.length) setErrorMessage(`Cannot find any tokens`);
+      setTokens(tokens);
+    } catch {
+      setTokens([]);
+      setErrorMessage(`Failed to get any tokens`);
+    } finally {
+      setLoading(false);
+    }
+  }, [acceptedFiles, setMode, setTokens]);
 
   return (
     <div className="py-5">
@@ -93,7 +122,10 @@ export const LoadingFromFile: FC<LoadingFromFileProps> = ({ mode, setTokens }) =
       </div>
       <div className="my-2 flex items-center gap-2">
         <Button type="button" buttonType="secondary" disabled={!disabled} onClick={handleLoadTokens}>
-          Load {mode}
+          Load {initialMode}
+        </Button>
+        <Button type="button" buttonType="secondary" disabled={!disabled} onClick={handleLoadAllTokens}>
+          Load all tokens
         </Button>
         {!!errorMessage && (
           <div className="flex items-center gap-1 text-brand-secondary-5">

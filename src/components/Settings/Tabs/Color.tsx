@@ -21,9 +21,20 @@ type ColorProps = {
   setColors: Dispatch<SetStateAction<NonNullable<Type.KVStorage['colors']>>>;
   setWithDarkMode: Dispatch<SetStateAction<NonNullable<Type.KVStorage['withDarkMode']>>>;
   setAllowGroups: Dispatch<SetStateAction<Type.KVStorage['allowedGroup']>>;
+  setDimensions: Dispatch<SetStateAction<NonNullable<Type.KVStorage['dimensions']>>>;
+  setBorders: Dispatch<SetStateAction<NonNullable<Type.KVStorage['borders']>>>;
 };
 
-const Color: FC<ColorProps> = ({ colors, allowGroups, withDarkMode, setColors, setWithDarkMode, setAllowGroups }) => {
+const Color: FC<ColorProps> = ({
+  colors,
+  allowGroups,
+  withDarkMode,
+  setColors,
+  setWithDarkMode,
+  setAllowGroups,
+  setDimensions,
+  setBorders,
+}) => {
   const [isShowAddDesignTokensModal, setIsShowAddDesignTokensModal] = useState(false);
   const [isShowGroupManagementModal, setIsShowGroupManagementModal] = useState(false);
 
@@ -51,10 +62,26 @@ const Color: FC<ColorProps> = ({ colors, allowGroups, withDarkMode, setColors, s
 
   const handleLoadNewColors = useCallback(
     (props: SetStateAction<NonNullable<Type.KVStorage['colors']>>) => {
-      setIsShowAddDesignTokensModal(false);
       setColors(props);
+      setIsShowAddDesignTokensModal(false);
     },
     [setColors]
+  );
+
+  const handleLoadNewDimensions = useCallback(
+    (props: SetStateAction<NonNullable<Type.KVStorage['dimensions']>>) => {
+      setDimensions(props);
+      setIsShowAddDesignTokensModal(false);
+    },
+    [setDimensions]
+  );
+
+  const handleLoadNewBorders = useCallback(
+    (props: SetStateAction<NonNullable<Type.KVStorage['borders']>>) => {
+      setBorders(props);
+      setIsShowAddDesignTokensModal(false);
+    },
+    [setBorders]
   );
 
   const handleDarkModeClick = useCallback(() => setWithDarkMode(prevState => !prevState), [setWithDarkMode]);
@@ -204,7 +231,13 @@ const Color: FC<ColorProps> = ({ colors, allowGroups, withDarkMode, setColors, s
           title="Upload design tokens"
           className="custom-modal-wrapper"
         >
-          <AddDesignTokensModal mode={TokenType.Color} setColors={handleLoadNewColors} isDarkEnable={withDarkMode} />
+          <AddDesignTokensModal
+            mode={TokenType.Color}
+            setColors={handleLoadNewColors}
+            isDarkEnable={withDarkMode}
+            setDimensions={handleLoadNewDimensions}
+            setBorders={handleLoadNewBorders}
+          />
         </ModalDialog>
       )}
       {isShowGroupManagementModal && (
