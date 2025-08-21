@@ -202,7 +202,8 @@ export const setDataToKVStorage = (
   });
 
 export const checkRoles = (projectId: string | string[], xApiKey: string, baseUrl: string) => {
-  if (!new URL(baseUrl).hostname?.endsWith('uniform.app')) {
+  const hostname = new URL(baseUrl).hostname;
+  if (!hostname || (hostname !== 'uniform.app' && !hostname.endsWith('.uniform.app'))) {
     return {
       ok: false,
       status: 403,
