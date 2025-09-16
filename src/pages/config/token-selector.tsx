@@ -16,7 +16,7 @@ import WithStylesVariables from '@/components/WithStylesVariables';
 import { ALLOW_COLOR_GROUP, ALLOW_DIMENSION_GROUP, DEFAULT_GROUP_NAME, TokenType } from '@/constants';
 import { useLoadDataFromKVStore } from '@/hooks/useLoadDataFromKVStore';
 import useWithViewPortDefaultValue from '@/hooks/useWithViewPortDefaultValue';
-import { capitalizeFirstLetter, getOptionFromToken } from '@/utils';
+import { capitalizeFirstLetter, cleanUpCanvasValue, getOptionFromToken } from '@/utils';
 
 const DesignExtensionsParametersConfig: FC = () => {
   const {
@@ -65,7 +65,10 @@ const DesignExtensionsParametersConfig: FC = () => {
 
   const handleSetDefaultValue = () => {
     setConfig(previousValue => {
-      const newValue = { ...previousValue, defaultValue: previewDefaultValue ?? undefined };
+      const newValue = {
+        ...previousValue,
+        defaultValue: cleanUpCanvasValue(previewDefaultValue) ?? undefined,
+      };
       return { newValue };
     });
   };

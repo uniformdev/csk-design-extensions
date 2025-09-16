@@ -2,6 +2,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { Callout } from '@uniformdev/design-system';
 import { SetLocationValueDispatch } from '@uniformdev/mesh-sdk-react';
 import { SliderType, VIEW_PORT_TABS } from '@/constants';
+import { cleanUpCanvasValue } from '@/utils';
 import DeleteButton from '../DeleteButton';
 import ResponsiveTabs from '../ResponsiveTabs';
 import Slider from '../Slider';
@@ -10,7 +11,7 @@ import UpdateDefaultSingle from '../UpdateDefaultSingle';
 type ConfigurableSliderParamProps = {
   withViewPort: boolean;
   value?: Type.ViewPort<string | number> | string | number;
-  setValue: SetLocationValueDispatch<Type.ViewPort<number | string> | number | string | undefined>;
+  setValue: SetLocationValueDispatch<Type.ViewPort<number | string> | number | string | null>;
   minValue?: number;
   maxValue?: number;
   step?: number;
@@ -40,7 +41,7 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
       if (isReadOnly) return;
       if (withViewPort) {
         setValue(previousValue => ({
-          newValue:
+          newValue: cleanUpCanvasValue(
             typeof previousValue === 'string' || typeof previousValue === 'number'
               ? VIEW_PORT_TABS.reduce<Type.ViewPort<string>>(
                   (acc, { tabKey }) => ({
@@ -50,20 +51,22 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
                   {}
                 )
               : previousValue ||
-                VIEW_PORT_TABS.reduce<Type.ViewPort<string>>(
-                  (acc, { tabKey }) => ({
-                    ...acc,
-                    [tabKey]: (defaultValue as Type.ViewPort<string>)?.[tabKey],
-                  }),
-                  {}
-                ),
+                  VIEW_PORT_TABS.reduce<Type.ViewPort<string>>(
+                    (acc, { tabKey }) => ({
+                      ...acc,
+                      [tabKey]: (defaultValue as Type.ViewPort<string>)?.[tabKey],
+                    }),
+                    {}
+                  )
+          ),
         }));
       } else {
         setValue(previousValue => ({
-          newValue:
+          newValue: cleanUpCanvasValue(
             typeof previousValue === 'string' || typeof previousValue === 'number'
               ? (previousValue ?? defaultValue)
-              : (previousValue?.[VIEW_PORT_TABS[0].tabKey] ?? defaultValue),
+              : (previousValue?.[VIEW_PORT_TABS[0].tabKey] ?? defaultValue)
+          ),
         }));
       }
     },
@@ -74,12 +77,12 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
   const handelSaveValue = (value?: number | string, tabKey?: Type.ViewPortKeyType) =>
     tabKey
       ? setValue(previousValue => ({
-          newValue: {
+          newValue: cleanUpCanvasValue({
             ...(previousValue as Type.ViewPort<string | number>),
             [tabKey]: value,
-          },
+          }),
         }))
-      : setValue(() => ({ newValue: value }));
+      : setValue(() => ({ newValue: cleanUpCanvasValue(value) }));
 
   const isValidValue = useMemo(() => {
     const currentValue = typeof value === 'string' || typeof value === 'number' ? value : value?.[selectedTab];
@@ -105,7 +108,7 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
         mobile: (defaultValue as Type.ViewPort<string>)?.['mobile'],
       };
       return {
-        newValue: newValue,
+        newValue: cleanUpCanvasValue(newValue),
       };
     });
   };
@@ -125,7 +128,7 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
       setValue(() => {
         const newValue = defaultValue;
         return {
-          newValue,
+          newValue: cleanUpCanvasValue(newValue),
         };
       });
     }
@@ -139,14 +142,14 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
           [tabKey]: '',
         };
         return {
-          newValue,
+          newValue: cleanUpCanvasValue(newValue),
         };
       });
     } else {
       setValue(() => {
         const newValue = '';
         return {
-          newValue,
+          newValue: cleanUpCanvasValue(newValue),
         };
       });
     }
@@ -167,7 +170,10 @@ const ConfigurableSliderParam: FC<ConfigurableSliderParamProps> = ({
       <Callout type="danger">
         <div className="flex flex-row items-center justify-center gap-4">
           The parameter configuration changed. Clear data and save new.
-          <DeleteButton onClick={() => setValue(() => ({ newValue: options?.[0]?.value }))} title="Clear" />
+          <DeleteButton
+            onClick={() => setValue(() => ({ newValue: cleanUpCanvasValue(options?.[0]?.value) }))}
+            title="Clear"
+          />
         </div>
       </Callout>
     );

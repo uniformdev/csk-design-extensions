@@ -8,7 +8,7 @@ import { getGroupFromKey } from '@/utils';
 
 type ColorPaletteParamProps = {
   value?: string;
-  setValue: SetLocationValueDispatch<string | null | undefined, string | null | undefined>;
+  setValue: SetLocationValueDispatch<string | null, string | null>;
   withDarkMode: NonNullable<Type.KVStorage['withDarkMode']>;
   colors: NonNullable<Type.KVStorage['colors']>;
   selectedGroup?: string;

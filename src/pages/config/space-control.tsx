@@ -21,7 +21,14 @@ import {
 } from '@/constants';
 import { useLoadDataFromKVStore } from '@/hooks/useLoadDataFromKVStore';
 import useWithViewPortDefaultValue from '@/hooks/useWithViewPortDefaultValue';
-import { addNewOption, capitalizeFirstLetter, getGroupFromKey, getNameFromKey, validateOptions } from '@/utils';
+import {
+  addNewOption,
+  capitalizeFirstLetter,
+  cleanUpCanvasValue,
+  getGroupFromKey,
+  getNameFromKey,
+  validateOptions,
+} from '@/utils';
 
 type Configuration = {
   options?: KeyValueItem[];
@@ -125,7 +132,7 @@ const SpaceParametersConfig: FC<DesignExtensionsParametersConfigProps> = ({
       setConfig(previousValue => ({
         newValue: {
           ...previousValue,
-          defaultValue: previewDefaultValue ?? undefined,
+          defaultValue: cleanUpCanvasValue(previewDefaultValue) ?? undefined,
         },
       })),
     [previewDefaultValue, setConfig]

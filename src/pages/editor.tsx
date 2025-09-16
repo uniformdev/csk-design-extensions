@@ -69,7 +69,7 @@ const DesignExtensionsParametersEditor: FC = () => {
             withDarkMode={withDarkMode}
             colors={colors}
             selectedGroup={selectedGroup}
-            setValue={setValue as SetLocationValueDispatch<string | undefined | null, string | undefined | null>}
+            setValue={setValue as SetLocationValueDispatch<string | null, string | null>}
             allowColors={allowColors}
           />
         </ReadOnlyContainer>
@@ -89,8 +89,8 @@ const DesignExtensionsParametersEditor: FC = () => {
             defaultValue={defaultValue as SpaceValueType | Type.ViewPort<SpaceValueType> | undefined}
             setValue={
               setValue as SetLocationValueDispatch<
-                SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | undefined,
-                SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | undefined
+                SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | null,
+                SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | null
               >
             }
           />
@@ -108,9 +108,7 @@ const DesignExtensionsParametersEditor: FC = () => {
             step={step}
             type={type}
             options={options}
-            setValue={
-              setValue as SetLocationValueDispatch<Type.ViewPort<number | string> | number | string | undefined>
-            }
+            setValue={setValue as SetLocationValueDispatch<Type.ViewPort<number | string> | number | string | null>}
             defaultValue={defaultValue as string}
           />
         </ReadOnlyContainer>
@@ -123,8 +121,8 @@ const DesignExtensionsParametersEditor: FC = () => {
             value={value as Type.ViewPort<string> | string | undefined}
             setValue={
               setValue as SetLocationValueDispatch<
-                Type.ViewPort<string> | string | undefined,
-                Type.ViewPort<string> | string | undefined
+                Type.ViewPort<string> | string | null,
+                Type.ViewPort<string> | string | null
               >
             }
             options={options || []}
@@ -172,8 +170,8 @@ const DesignExtensionsParametersEditor: FC = () => {
             value={value as Type.ViewPort<string> | string | undefined}
             setValue={
               setValue as SetLocationValueDispatch<
-                Type.ViewPort<string> | string | undefined,
-                Type.ViewPort<string> | string | undefined
+                Type.ViewPort<string> | string | null,
+                Type.ViewPort<string> | string | null
               >
             }
             options={tokensToRender}

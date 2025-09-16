@@ -357,3 +357,12 @@ export const getEnvironmentFromUrl = (url: string): string => {
     return '';
   }
 };
+
+export const cleanUpCanvasValue = <T>(defaultValue: T): Exclude<T, undefined> | null => {
+  if (typeof defaultValue !== 'object') {
+    return (defaultValue || null) as Exclude<T, undefined> | null;
+  }
+
+  const defaultValueEntries = Object.entries(defaultValue || {}).filter(([_, value]) => !!value);
+  return defaultValueEntries.length ? (Object.fromEntries(defaultValueEntries) as Exclude<T, undefined>) : null;
+};

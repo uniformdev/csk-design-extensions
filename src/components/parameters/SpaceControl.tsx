@@ -11,11 +11,11 @@ import {
   TRUE_VALIDATION_RESULT,
   VIEW_PORT_TABS,
 } from '@/constants';
-import { getGroupFromKey, getNameFromKey } from '@/utils';
+import { cleanUpCanvasValue, getGroupFromKey, getNameFromKey } from '@/utils';
 import SpaceControl from '../SpaceControl';
 import { UNITS } from '../SpaceControl/components/ChangeValueInput';
 
-const validate = (value?: SpaceValueType | Type.ViewPort<SpaceValueType | undefined>): ValidationResult => {
+const validate = (value?: SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | null): ValidationResult => {
   if (!value || Object.values(value).every(item => typeof item === 'string')) {
     if (!Object.values(value || {}).filter(Boolean).length) {
       return {
@@ -54,8 +54,8 @@ type SpaceControlProps = {
   defaultValue?: SpaceValueType | Type.ViewPort<SpaceValueType | undefined>;
   options?: MeshType.KeyValueItem[];
   setValue: SetLocationValueDispatch<
-    SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | undefined,
-    SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | undefined
+    SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | null,
+    SpaceValueType | Type.ViewPort<SpaceValueType | undefined> | null
   >;
   dimensions: NonNullable<Type.KVStorage['dimensions']>;
   type?: string;
@@ -80,13 +80,13 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
 
   const onResetAllValues = () => {
     setValue(() => {
-      const newValue = {
+      const newValue = cleanUpCanvasValue({
         desktop: (defaultValue as Type.ViewPort<SpaceValueType | undefined> | undefined)?.['desktop'],
         tablet: (defaultValue as Type.ViewPort<SpaceValueType | undefined> | undefined)?.['tablet'],
         mobile: (defaultValue as Type.ViewPort<SpaceValueType | undefined> | undefined)?.['mobile'],
-      };
+      });
       return {
-        newValue: newValue,
+        newValue,
         options: required ? validate(newValue) : undefined,
       };
     });
@@ -159,7 +159,7 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
 
         const isWrongValueSet = Object.values(newValue).some(checkWrongValue);
 
-        const validValue = isWrongValueSet ? defaultValue : newValue;
+        const validValue = cleanUpCanvasValue(isWrongValueSet ? defaultValue || null : newValue);
         return {
           newValue: validValue,
           options: required ? validate(validValue) : undefined,
@@ -172,7 +172,7 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
             ? (previousValue as SpaceValueType | undefined)
             : (previousValue as Type.ViewPort<SpaceValueType | undefined> | undefined)?.[VIEW_PORT_TABS[0].tabKey];
 
-        const validValue = checkWrongValue(newValue) ? defaultValue : newValue;
+        const validValue = cleanUpCanvasValue(checkWrongValue(newValue) ? defaultValue : newValue);
 
         return {
           newValue: validValue,
@@ -197,7 +197,7 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
       });
     } else {
       setValue(() => {
-        const newValue = defaultValue;
+        const newValue = cleanUpCanvasValue(defaultValue);
         return {
           newValue,
           options: required ? validate(newValue) : undefined,
@@ -209,10 +209,10 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
   const onUnsetValue = (tabKey?: Type.ViewPortKeyType) => {
     if (tabKey) {
       setValue(previousValue => {
-        const newValue = {
+        const newValue = cleanUpCanvasValue({
           ...(previousValue as Type.ViewPort<SpaceValueType | undefined> | undefined),
           [tabKey]: {},
-        };
+        });
         return {
           newValue,
           options: required ? validate(newValue) : undefined,
@@ -220,7 +220,7 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
       });
     } else {
       setValue(() => {
-        const newValue = {};
+        const newValue = cleanUpCanvasValue({});
         return {
           newValue,
           options: required ? validate(newValue) : undefined,
@@ -244,14 +244,17 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
             .filter(key => value[key as SpaceProperties])
             .reduce((acc, key) => ({ ...acc, [key]: value[key as SpaceProperties] }), {});
 
-          const newValue = {
+          const newValue = cleanUpCanvasValue({
             ...prevState,
             [tabKey]: {
               ...prevTabValue,
               ...newTabValue,
             },
+          });
+          return {
+            newValue,
+            options: required ? validate(newValue) : undefined,
           };
-          return { newValue, options: required ? validate(newValue) : undefined };
         });
       } else {
         setValue(prevState => {
@@ -264,8 +267,11 @@ const SpaceControlParameter: FC<SpaceControlProps> = ({
             .filter(key => value[key as SpaceProperties])
             .reduce((acc, key) => ({ ...acc, [key]: value[key as SpaceProperties] }), {});
 
-          const newState = { ...prevValue, ...newValue };
-          return { newValue: newState, options: required ? validate(newValue) : undefined };
+          const newState = cleanUpCanvasValue({ ...prevValue, ...newValue });
+          return {
+            newValue: newState,
+            options: required ? validate(newValue) : undefined,
+          };
         });
       }
     },

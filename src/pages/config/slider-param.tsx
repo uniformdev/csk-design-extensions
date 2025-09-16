@@ -10,7 +10,7 @@ import Slider from '@/components/Slider';
 import UpdateDefaultSingle from '@/components/UpdateDefaultSingle';
 import { SliderType, TRUE_VALIDATION_RESULT } from '@/constants';
 import useWithViewPortDefaultValue from '@/hooks/useWithViewPortDefaultValue';
-import { addNewOption, validateOptions } from '@/utils';
+import { addNewOption, cleanUpCanvasValue, validateOptions } from '@/utils';
 
 type Configuration = {
   minValue?: number;
@@ -26,6 +26,10 @@ const validate = ({ minValue, maxValue, step, type, options }: Configuration): V
       isValid: false,
       validationMessage: `The options is required for custom slider type`,
     };
+  }
+
+  if (type !== SliderType.Steps) {
+    return TRUE_VALIDATION_RESULT;
   }
 
   const validations = [];
@@ -163,9 +167,8 @@ const DesignExtensionsParametersConfig: FC = () => {
 
     // reset all params to default when slider type changed
     setOptions([addNewOption(0)]);
-    setConfig(previousValue => {
+    setConfig(() => {
       const newValue = {
-        ...previousValue,
         [name]: newType,
         ...(newType === 'custom' ? CustomTypeDefaultOptions : {}),
         ...(newType === 'steps' ? StepTypeDefaultOptions : {}),
@@ -282,7 +285,7 @@ const DesignExtensionsParametersConfig: FC = () => {
     setConfig(previousValue => {
       const newValue = {
         ...previousValue,
-        defaultValue: (previewDefaultValue as Type.ViewPort<string>) ?? undefined,
+        defaultValue: cleanUpCanvasValue(previewDefaultValue) ?? undefined,
       };
       return { newValue };
     });

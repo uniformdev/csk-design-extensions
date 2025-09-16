@@ -3,10 +3,11 @@ import { SegmentedControl as MeshSegmentedControl } from '@uniformdev/design-sys
 import { SetLocationValueDispatch, ValidationResult } from '@uniformdev/mesh-sdk-react';
 import { ClearParameterValue } from '@/components/ClearParameterValue';
 import { TRUE_VALIDATION_RESULT, VIEW_PORT_TABS } from '@/constants';
+import { cleanUpCanvasValue } from '@/utils';
 import ResponsiveTabs from '../ResponsiveTabs';
 import UpdateDefaultSingle from '../UpdateDefaultSingle';
 
-const validate = (value?: Type.ViewPort<string> | string): ValidationResult => {
+const validate = (value?: Type.ViewPort<string> | string | null): ValidationResult => {
   if (typeof value === 'string') {
     if (!value) {
       return {
@@ -30,10 +31,7 @@ const validate = (value?: Type.ViewPort<string> | string): ValidationResult => {
 type SegmentedControlProps = {
   withViewPort: boolean;
   value?: Type.ViewPort<string> | string;
-  setValue: SetLocationValueDispatch<
-    Type.ViewPort<string> | string | undefined,
-    Type.ViewPort<string> | string | undefined
-  >;
+  setValue: SetLocationValueDispatch<Type.ViewPort<string> | string | null, Type.ViewPort<string> | string | null>;
   options: MeshType.KeyValueItem[];
   defaultValue?: string;
   required?: boolean;
@@ -54,7 +52,7 @@ const SegmentedControl: FC<SegmentedControlProps> = ({
     () => {
       if (withViewPort) {
         setValue(previousValue => {
-          const newValue =
+          const newValue = cleanUpCanvasValue(
             typeof previousValue === 'string'
               ? VIEW_PORT_TABS.reduce<Type.ViewPort<string>>(
                   (acc, { tabKey }) => ({
@@ -64,26 +62,28 @@ const SegmentedControl: FC<SegmentedControlProps> = ({
                   {}
                 )
               : previousValue ||
-                VIEW_PORT_TABS.reduce<Type.ViewPort<string>>(
-                  (acc, { tabKey }) => ({
-                    ...acc,
-                    [tabKey]: (defaultValue as Type.ViewPort<string>)?.[tabKey],
-                  }),
-                  {}
-                );
+                  VIEW_PORT_TABS.reduce<Type.ViewPort<string>>(
+                    (acc, { tabKey }) => ({
+                      ...acc,
+                      [tabKey]: (defaultValue as Type.ViewPort<string>)?.[tabKey],
+                    }),
+                    {}
+                  )
+          );
           return {
-            newValue,
+            newValue: newValue,
             options: required ? validate(newValue) : undefined,
           };
         });
       } else {
         setValue(previousValue => {
-          const newValue =
+          const newValue = cleanUpCanvasValue(
             typeof previousValue === 'string'
               ? (previousValue ?? defaultValue)
-              : (previousValue?.[VIEW_PORT_TABS[0].tabKey] ?? defaultValue);
+              : (previousValue?.[VIEW_PORT_TABS[0].tabKey] ?? defaultValue)
+          );
           return {
-            newValue,
+            newValue: newValue,
             options: required ? validate(newValue) : undefined,
           };
         });
@@ -120,29 +120,32 @@ const SegmentedControl: FC<SegmentedControlProps> = ({
   const handelSetValue = (value: string, tabKey?: Type.ViewPortKeyType) =>
     tabKey
       ? setValue(previousValue => {
-          const newValue = {
+          const newValue = cleanUpCanvasValue({
             ...(previousValue as Type.ViewPort<string>),
             [tabKey]: value,
+          });
+          return {
+            newValue: newValue,
+            options: required ? validate(newValue) : undefined,
           };
+        })
+      : setValue(() => {
+          const newValue = cleanUpCanvasValue(value);
           return {
             newValue,
             options: required ? validate(newValue) : undefined,
           };
-        })
-      : setValue(() => ({
-          newValue: value,
-          options: required ? validate(value) : undefined,
-        }));
+        });
 
   const onResetAllValues = () => {
     setValue(() => {
-      const newValue = {
+      const newValue = cleanUpCanvasValue({
         desktop: (defaultValue as Type.ViewPort<string>)?.['desktop'],
         tablet: (defaultValue as Type.ViewPort<string>)?.['tablet'],
         mobile: (defaultValue as Type.ViewPort<string>)?.['mobile'],
-      };
+      });
       return {
-        newValue: newValue,
+        newValue,
         options: required ? validate(newValue) : undefined,
       };
     });
@@ -151,10 +154,10 @@ const SegmentedControl: FC<SegmentedControlProps> = ({
   const onResetToDefault = (tabKey?: Type.ViewPortKeyType) => {
     if (tabKey) {
       setValue(previousValue => {
-        const newValue = {
+        const newValue = cleanUpCanvasValue({
           ...(previousValue as Type.ViewPort<string>),
           [tabKey]: (defaultValue as Type.ViewPort<string>)?.[tabKey],
-        };
+        });
         return {
           newValue,
           options: required ? validate(newValue) : undefined,
@@ -162,7 +165,7 @@ const SegmentedControl: FC<SegmentedControlProps> = ({
       });
     } else {
       setValue(() => {
-        const newValue = defaultValue;
+        const newValue = cleanUpCanvasValue(defaultValue);
         return {
           newValue,
           options: required ? validate(newValue) : undefined,
@@ -174,10 +177,10 @@ const SegmentedControl: FC<SegmentedControlProps> = ({
   const onUnsetValue = (tabKey?: Type.ViewPortKeyType) => {
     if (tabKey) {
       setValue(previousValue => {
-        const newValue = {
+        const newValue = cleanUpCanvasValue({
           ...(previousValue as Type.ViewPort<string>),
           [tabKey]: '',
-        };
+        });
         return {
           newValue,
           options: required ? validate(newValue) : undefined,
@@ -185,7 +188,7 @@ const SegmentedControl: FC<SegmentedControlProps> = ({
       });
     } else {
       setValue(() => {
-        const newValue = '';
+        const newValue = cleanUpCanvasValue('');
         return {
           newValue,
           options: required ? validate(newValue) : undefined,
@@ -227,7 +230,7 @@ const SegmentedControl: FC<SegmentedControlProps> = ({
   const onClearValue = useCallback(
     () =>
       setValue(() => ({
-        newValue: undefined,
+        newValue: null,
         options: required ? validate(undefined) : undefined,
       })),
     [required, setValue]

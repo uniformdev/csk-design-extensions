@@ -8,7 +8,7 @@ import ResponsiveTabs from '@/components/ResponsiveTabs';
 import UpdateDefaultSingle from '@/components/UpdateDefaultSingle';
 import { TRUE_VALIDATION_RESULT } from '@/constants';
 import useWithViewPortDefaultValue from '@/hooks/useWithViewPortDefaultValue';
-import { addNewOption, validateOptions } from '@/utils';
+import { addNewOption, cleanUpCanvasValue, validateOptions } from '@/utils';
 
 type Configuration = {
   options?: KeyValueItem[];
@@ -68,7 +68,7 @@ const DesignExtensionsParametersConfig: FC = () => {
     setConfig(previousValue => {
       const newValue = {
         ...previousValue,
-        defaultValue: (previewDefaultValue as string | Type.ViewPort<string>) ?? undefined,
+        defaultValue: cleanUpCanvasValue(previewDefaultValue) ?? undefined,
       };
       return { newValue };
     });
