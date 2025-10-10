@@ -125,6 +125,57 @@ For a quick start with a pre-configured application, use the **Component Starter
 
   Follow the interactive steps to set up the starter kit.
 
+## Property Editor Scripts
+
+This integration includes scripts to deploy and remove custom property editors for design system management.
+
+### deploy-propertyEditor
+
+Deploys property editors with AI editing hooks to Uniform.
+
+```bash
+npm run deploy-propertyEditor
+```
+
+**What it does:**
+
+- Deploys `createAIEdit` and `afterAIEdit` hooks for the following property types:
+  - `dex-color-palette-parameter` - Color palette management
+  - `dex-space-control-parameter` - Spacing control
+  - `dex-slider-control-parameter` - Slider configuration
+  - `dex-segmented-control-parameter` - Segmented control options
+  - `dex-token-selector-parameter` - Design token selection
+
+**Available hooks:**
+
+- `createAIEdit` - Hook executed when creating AI-powered edits
+- `afterAIEdit` - Hook executed after AI editing is complete
+
+### remove-propertyEditor
+
+Removes deployed property editors from Uniform.
+
+```bash
+npm run remove-propertyEditor
+```
+
+**What it does:**
+
+- Removes the same property editors and hooks that were deployed with `deploy-propertyEditor`
+- Useful for cleanup or when updating property editor configurations
+
+### Manual Script Usage
+
+You can also run the scripts directly with custom parameters:
+
+```bash
+# Deploy specific hooks and property types
+npx tsx scripts/deploy-property-editors.ts createAIEdit/afterAIEdit dex-color-palette-parameter
+
+# Remove specific property editors
+npx tsx scripts/remove-property-editors.ts createAIEdit/afterAIEdit dex-color-palette-parameter
+```
+
 ## Recommended Packages
 
 Enhance your development workflow with these essential packages:
