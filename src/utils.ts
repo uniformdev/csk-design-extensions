@@ -130,12 +130,12 @@ export const getNameFromKey = (key: string, selectedGroup = DEFAULT_GROUP_NAME) 
 export const validateOptions = (newOptions: KeyValueItem[]) => {
   return newOptions.map(option => {
     if (!option.value) {
-      return { value: 'Value is required', key: '' };
+      return { value: 'Value is required', key: '', icon: '' };
     }
 
     const existingOptions = newOptions.filter(o => o.value === option.value);
     if (existingOptions.length > 1) {
-      return { value: 'Values must be unique', key: '' };
+      return { value: 'Values must be unique', key: '', icon: '' };
     }
 
     return null;
