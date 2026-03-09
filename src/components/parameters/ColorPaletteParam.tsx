@@ -1,10 +1,13 @@
-import React, { FC, useCallback, useMemo, ChangeEvent } from 'react';
+import React, { FC, useCallback, useMemo, useState, ChangeEvent } from 'react';
 import classNames from 'classnames';
-import { Callout } from '@uniformdev/design-system';
+import { Button, Callout } from '@uniformdev/design-system';
 import { SetLocationValueDispatch } from '@uniformdev/mesh-sdk-react';
 import WithStylesVariables from '@/components/WithStylesVariables';
 import { ALLOW_COLOR_GROUP } from '@/constants';
 import { getGroupFromKey } from '@/utils';
+import Sketch from '@uiw/react-color-sketch';
+
+const CUSTOM_HEX_PREFIX = 'custom:';
 
 type ColorPaletteParamProps = {
   value?: string;
@@ -13,6 +16,7 @@ type ColorPaletteParamProps = {
   colors: NonNullable<Type.KVStorage['colors']>;
   selectedGroup?: string;
   allowColors?: string[];
+  allowCustomHex?: boolean;
 };
 
 const ColorPaletteParam: FC<ColorPaletteParamProps> = ({
@@ -22,7 +26,12 @@ const ColorPaletteParam: FC<ColorPaletteParamProps> = ({
   colors = [],
   selectedGroup,
   allowColors,
+  allowCustomHex,
 }) => {
+  const isCustomHexValue = value?.startsWith(CUSTOM_HEX_PREFIX) ?? false;
+  const customHexColor = isCustomHexValue && value ? value.slice(CUSTOM_HEX_PREFIX.length) : undefined;
+  const [showPicker, setShowPicker] = useState(false);
+
   const availableItems = useMemo(() => {
     if (allowColors?.length) {
       return colors.filter(({ colorKey }) => allowColors.includes(colorKey));
@@ -35,12 +44,27 @@ const ColorPaletteParam: FC<ColorPaletteParamProps> = ({
   const handleSelection = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const selected = event.currentTarget.value;
+      setShowPicker(false);
       setValue(prev => ({ newValue: prev === selected ? null : selected }));
     },
     [setValue]
   );
 
-  const handleClear = useCallback(() => setValue(() => ({ newValue: null })), [setValue]);
+  const handlePickerChange = useCallback(
+    (color: { hex: string }) => {
+      setValue(() => ({ newValue: `${CUSTOM_HEX_PREFIX}${color.hex}` }));
+    },
+    [setValue]
+  );
+
+  const handleCustomSquareClick = useCallback(() => {
+    setShowPicker(prev => !prev);
+  }, []);
+
+  const handleClear = useCallback(() => {
+    setShowPicker(false);
+    setValue(() => ({ newValue: null }));
+  }, [setValue]);
 
   if (!colors.length) {
     return (
@@ -97,9 +121,33 @@ const ColorPaletteParam: FC<ColorPaletteParamProps> = ({
             </label>
           );
         })}
+        {allowCustomHex && (
+          <button
+            type="button"
+            onClick={handleCustomSquareClick}
+            className={classNames(
+              'relative size-8 rounded-sm border cursor-pointer',
+              'hover:outline hover:outline-2 hover:outline-accent-dark-hover',
+              'flex items-center justify-center',
+              isCustomHexValue ? 'outline outline-2 outline-accent-dark border-white' : 'border-dashed border-gray-400'
+            )}
+            style={customHexColor ? { backgroundColor: customHexColor } : undefined}
+            title="Custom hex color"
+          >
+            {!customHexColor && <span className="text-sm font-bold text-gray-400">?</span>}
+          </button>
+        )}
       </div>
+      {allowCustomHex && showPicker && (
+        <div className="mt-2 flex flex-col items-start gap-1.5">
+          <Sketch color={customHexColor || '#000000'} onChange={handlePickerChange} />
+          <Button buttonType="secondary" size="sm" onClick={() => setShowPicker(false)}>
+            Accept
+          </Button>
+        </div>
+      )}
       <div className="mt-2 flex items-center justify-between">
-        <span className="h-6 truncate">{value}</span>
+        <span className="h-6 truncate">{isCustomHexValue ? customHexColor : value}</span>
         <button
           // eslint-disable-next-line tailwindcss/no-custom-classname
           className="text-action-destructive-default disabled:text-gray-400"

@@ -13,6 +13,7 @@ declare namespace MeshType {
     withViewPort?: boolean;
     selectedGroup?: string;
     selectedTokenType?: string;
+    allowCustomHex?: boolean;
     allowColors?: string[];
     allowDimensions?: string[];
     allowTokens?: string[];

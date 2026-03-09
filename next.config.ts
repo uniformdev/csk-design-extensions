@@ -9,6 +9,7 @@ const nextConfig = {
     // react-icons related bug https://linear.app/uniform/issue/UNI-1373/need-to-set-esmexternals-to-use-the-mesh-sdk-with-nextjs
     esmExternals: false,
   },
+  devIndicators: false,
 };
 
 export default nextConfig;
