@@ -1,6 +1,6 @@
 {
   "name": "@uniformdev/design-extensions",
-  "version": "20.36.1",
+  "version": "20.51.0",
   "private": true,
   "engines": {
     "yarn": "please-use-npm",
@@ -19,15 +19,16 @@
     "remove-propertyEditor": "tsx scripts/remove-property-editors.ts createAIEdit/afterAIEdit dex-color-palette-parameter dex-space-control-parameter dex-slider-control-parameter dex-segmented-control-parameter dex-token-selector-parameter"
   },
   "dependencies": {
-    "@uniformdev/canvas": "^20.36.1",
-    "@uniformdev/cli": "^20.36.1",
-    "@uniformdev/design-system": "^20.36.1",
-    "@uniformdev/mesh-edgehancer-sdk": "^20.36.1",
-    "@uniformdev/mesh-sdk-react": "^20.36.1",
+    "@uiw/react-color-sketch": "^2.9.6",
+    "@uniformdev/canvas": "^20.51.0",
+    "@uniformdev/cli": "^20.51.0",
+    "@uniformdev/design-system": "^20.51.0",
+    "@uniformdev/mesh-edgehancer-sdk": "^20.51.0",
+    "@uniformdev/mesh-sdk-react": "^20.51.0",
     "@vercel/kv": "^2.0.0",
     "classnames": "^2.5.1",
     "color": "^4.2.3",
-    "next": "^15.1.11",
+    "next": "^15.5.12",
     "react": "^18.2.0",
     "react-colorful": "^5.6.1",
     "react-dom": "^18.2.0",
@@ -53,7 +54,7 @@
     "postcss": "^8.5.1",
     "prettier": "3.5.1",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.3",
-    "tsx": "^4.19.1"
+    "tsx": "^4.19.1",
+    "typescript": "^5.7.3"
   }
 }

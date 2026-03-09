@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { LoadingOverlay, InputSelect } from '@uniformdev/design-system';
 import { useMeshLocation } from '@uniformdev/mesh-sdk-react';
+import CustomHexConfigToggle from '@/components/atoms/CustomHexConfigToggle';
 import RequiredConfigToggle from '@/components/atoms/RequiredConfigToggle';
 import ViewPortConfigToggle from '@/components/atoms/ViewPortConfigToggle';
 import { ClearParameterValue } from '@/components/ClearParameterValue';
@@ -118,6 +119,7 @@ const DesignExtensionsParametersConfig: FC = () => {
         )}
         <ViewPortConfigToggle withViewPort={config?.withViewPort} setViewPortConfig={setConfig} changeDefaultValue />
         <RequiredConfigToggle required={config?.required} setRequiredConfig={setConfig} />
+        <CustomHexConfigToggle allowCustomHex={config?.allowCustomHex} setCustomHexConfig={setConfig} />
         <ColorConfigItemSection
           filteredColors={filteredColors}
           allowColors={allowColors}

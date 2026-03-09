@@ -42,6 +42,7 @@ const DesignExtensionsParametersEditor: FC = () => {
   const {
     required = false,
     withViewPort = false,
+    allowCustomHex = false,
     allowColors = [],
     selectedTokenType,
     allowTokens = [],
@@ -71,6 +72,7 @@ const DesignExtensionsParametersEditor: FC = () => {
             selectedGroup={selectedGroup}
             setValue={setValue as SetLocationValueDispatch<string | null, string | null>}
             allowColors={allowColors}
+            allowCustomHex={allowCustomHex}
           />
         </ReadOnlyContainer>
       );
